@@ -1,6 +1,6 @@
 # RNA-seqのための環境構築 実習リポジトリ
 
-本リポジトリは、RNA-seq 解析に必要な Linux 基本操作を体験するための資料および実習用ファイルを配置しています。
+本リポジトリは、RNA-seq 解析に必要な Linux 基本操作を体験するための実習用ノートブックおよび補足資料を配置しています。
 
 ---
 
@@ -8,17 +8,16 @@
 
 以下のボタンをクリックすると、ブラウザ上でそのまま実習用 Colab が起動します。
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SatukiSuto-HPC/set_up_RNA-seq_env/blob/main/practice.ipynb)
-
-> ※ ノートブックのファイル名（`practice.ipynb`）が異なる場合は、URL 末尾のファイル名を変更してください。
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SatukiSuto-HPC/set_up_RNA-seq_env/blob/main/基本操作実践編.ipynb)
 
 ---
 
-### 講義資料・配布ファイル
+### 補足資料・環境構築ガイド（講義後の復習用）
 
-* `slides.pdf` : 講義スライド資料
-* `practice.ipynb` : ハンズオン用 Jupyter Notebook
-* `sample_data/` : 演習用テストデータ（FASTQ 等）
+講義外でご自身の Windows PC に WSL + Ubuntu 環境を構築したい方向けの HTML マニュアルです。
+
+* 🌐 [WSL + Ubuntu 環境構築ガイドを開く（ブラウザ表示）](https://htmlpreview.github.io/?https://github.com/SatukiSuto-HPC/set_up_RNA-seq_env/blob/main/wsl%2Bubuntu_setup.html)
+* 📄 [リポジトリ内のソースファイル（wsl+ubuntu_setup.html）](https://github.com/SatukiSuto-HPC/set_up_RNA-seq_env/blob/main/wsl%2Bubuntu_setup.html)
 
 ---
 
