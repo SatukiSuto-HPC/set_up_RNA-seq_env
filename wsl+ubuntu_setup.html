@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WSL2 + Ubuntu セットアップインタラクティブガイド</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .terminal-box {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f5f5f4; 
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d6d3d1; 
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e; 
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans h-screen overflow-hidden flex flex-col md:flex-row">
+
+    <nav class="bg-white shadow-md z-10 md:w-72 flex-shrink-0 flex flex-col md:h-full">
+        <div class="p-6 border-b border-stone-200 bg-stone-100">
+            <h1 class="text-xl font-bold text-stone-800 leading-tight">WSL2 + Ubuntu</h1>
+            <p class="text-sm text-stone-500 mt-2">初心者向けセットアップガイド</p>
+        </div>
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-4 flex flex-row md:flex-col gap-2" id="nav-container">
+            <button class="nav-btn active flex items-center gap-3 p-3 rounded-lg text-left transition-colors bg-orange-100 text-orange-800 font-semibold w-full min-w-[200px] md:min-w-0" data-step="0">
+                <span class="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-sm">🏁</span>
+                <span>はじめに</span>
+            </button>
+            <button class="nav-btn flex items-center gap-3 p-3 rounded-lg text-left transition-colors hover:bg-stone-100 text-stone-600 w-full min-w-[200px] md:min-w-0" data-step="1">
+                <span class="w-8 h-8 rounded-full bg-stone-200 flex items-center justify-center shadow-sm text-sm">1</span>
+                <span>事前準備</span>
+            </button>
+            <button class="nav-btn flex items-center gap-3 p-3 rounded-lg text-left transition-colors hover:bg-stone-100 text-stone-600 w-full min-w-[200px] md:min-w-0" data-step="2">
+                <span class="w-8 h-8 rounded-full bg-stone-200 flex items-center justify-center shadow-sm text-sm">2</span>
+                <span>インストール</span>
+            </button>
+            <button class="nav-btn flex items-center gap-3 p-3 rounded-lg text-left transition-colors hover:bg-stone-100 text-stone-600 w-full min-w-[200px] md:min-w-0" data-step="3">
+                <span class="w-8 h-8 rounded-full bg-stone-200 flex items-center justify-center shadow-sm text-sm">3</span>
+                <span>初期設定 (難所)</span>
+            </button>
+            <button class="nav-btn flex items-center gap-3 p-3 rounded-lg text-left transition-colors hover:bg-stone-100 text-stone-600 w-full min-w-[200px] md:min-w-0" data-step="4">
+                <span class="w-8 h-8 rounded-full bg-stone-200 flex items-center justify-center shadow-sm text-sm">4</span>
+                <span>システムの最新化</span>
+            </button>
+        </div>
+        <div class="p-4 border-t border-stone-200 text-xs text-stone-400 text-center hidden md:block">
+            Windows上でLinux環境を構築
+        </div>
+    </nav>
+
+    <main class="flex-1 overflow-y-auto custom-scrollbar bg-stone-50 p-6 md:p-12 relative" id="main-content">
+        
+        <section class="step-section block fade-in" id="step-0">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-stone-800 mb-6 border-b-2 border-orange-200 pb-2">はじめに：WSL2とUbuntuとは？</h2>
+                <p class="text-lg text-stone-600 mb-8 leading-relaxed">
+                    このアプリケーションは、Windowsのパソコンの中で「Linux（リナックス）」という別のシステムを動かすための設定手順を、ステップバイステップでナビゲートするガイドです。左側（モバイルの場合は上部）のメニューから順番に進めていくことで、安全かつ確実に環境を構築できます。
+                </p>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-10">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 hover:shadow-md transition-shadow">
+                        <div class="text-4xl mb-4">🪟</div>
+                        <h3 class="text-xl font-bold mb-2">WSL2 とは？</h3>
+                        <p class="text-stone-600 text-sm">Windows Subsystem for Linux 2の略称です。Windowsの中でLinuxをネイティブに近い速度で動かすための「土台」となる強力な機能です。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 hover:shadow-md transition-shadow">
+                        <div class="text-4xl mb-4">🐧</div>
+                        <h3 class="text-xl font-bold mb-2">Ubuntu とは？</h3>
+                        <p class="text-stone-600 text-sm">世界で最もよく使われている初心者にも優しいLinuxの種類（OS）です。今回はMicrosoft Storeで提供されている標準的な「Ubuntu」をインストールします。（通常は最新の安定版がインストールされます）</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button class="next-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg shadow transition-colors flex items-center gap-2" data-target="1">
+                        準備を始める <span>➡️</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="step-section hidden fade-in" id="step-1">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-stone-800 mb-6 border-b-2 border-orange-200 pb-2">事前準備：仮想化機能の確認</h2>
+                <p class="text-lg text-stone-600 mb-8 leading-relaxed">
+                    インストールを進める前に、お使いのパソコンで「仮想化」という機能がオンになっているか確認する必要があります。この機能が無効だとWSL2は動作しません。
+                </p>
+
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden mb-8">
+                    <div class="bg-stone-100 px-6 py-4 border-b border-stone-200 font-bold flex items-center gap-2">
+                        <span>🔍</span> 確認手順
+                    </div>
+                    <div class="p-6">
+                        <ol class="list-decimal list-inside space-y-4 text-stone-700">
+                            <li class="pl-2">キーボードの <kbd class="bg-stone-200 px-2 py-1 rounded text-sm font-mono shadow-sm">Ctrl</kbd> + <kbd class="bg-stone-200 px-2 py-1 rounded text-sm font-mono shadow-sm">Shift</kbd> + <kbd class="bg-stone-200 px-2 py-1 rounded text-sm font-mono shadow-sm">Esc</kbd> キーを同時に押して、<strong>「タスク マネージャー」</strong> を開きます。</li>
+                            <li class="pl-2">左側のメニューから <strong>「パフォーマンス」</strong>（波線のアイコン）をクリックします。</li>
+                            <li class="pl-2"><strong>「CPU」</strong> を選択し、画面右下の方にある <strong>「仮想化」</strong> の項目を確認します。</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-10">
+                    <div class="bg-teal-50 p-6 rounded-xl border border-teal-200">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-teal-600 text-xl">✅</span>
+                            <h3 class="font-bold text-teal-800">「有効」になっている場合</h3>
+                        </div>
+                        <p class="text-teal-700 text-sm">準備OKです！そのまま次のステップへ進んでインストールを開始できます。</p>
+                    </div>
+                    <div class="bg-red-50 p-6 rounded-xl border border-red-200">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-red-500 text-xl">⚠️</span>
+                            <h3 class="font-bold text-red-800">「無効」になっている場合</h3>
+                        </div>
+                        <p class="text-red-700 text-sm">パソコンの「BIOS設定」から仮想化（VT-x や SVM）をオンにする必要があります。設定方法はパソコンのメーカーごとに異なるため、ご自身のPCメーカーのサポートページを検索してご確認ください。</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <button class="prev-btn text-stone-500 hover:text-stone-800 font-bold py-2 px-4 transition-colors" data-target="0">
+                        ⬅️ 戻る
+                    </button>
+                    <button class="next-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg shadow transition-colors flex items-center gap-2" data-target="2">
+                        インストールへ進む <span>➡️</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="step-section hidden fade-in" id="step-2">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-stone-800 mb-6 border-b-2 border-orange-200 pb-2">インストール手順</h2>
+                <p class="text-lg text-stone-600 mb-8 leading-relaxed">
+                    Windowsの「PowerShell」でWSL機能を有効化した後、Microsoft StoreからUbuntuをインストールします。以下の手順に沿って進めてください。
+                </p>
+
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden mb-8">
+                    <div class="bg-stone-100 px-6 py-4 border-b border-stone-200 font-bold flex items-center gap-2">
+                        <span>⚙️</span> ステップ 1：PowerShellを「管理者」として開く
+                    </div>
+                    <div class="p-6 text-stone-700">
+                        <p class="mb-4 text-red-600 font-semibold text-sm">※通常の開き方ではなく、必ず「管理者」として開く必要があります。</p>
+                        <ol class="list-decimal list-inside space-y-3">
+                            <li class="pl-2">Windowsのスタートボタン、または検索窓（虫眼鏡マーク）をクリックします。</li>
+                            <li class="pl-2">キーボードで <code class="bg-stone-100 px-2 py-1 rounded text-orange-600">powershell</code> と入力します。</li>
+                            <li class="pl-2">検索結果の「Windows PowerShell」の右側にある <strong>「管理者として実行」</strong> をクリックします。</li>
+                            <li class="pl-2">確認画面が出たら <strong>「はい」</strong> をクリックします。</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden mb-8">
+                    <div class="bg-stone-100 px-6 py-4 border-b border-stone-200 font-bold flex items-center gap-2">
+                        <span>💻</span> ステップ 2：WSL有効化コマンドの実行
+                    </div>
+                    <div class="p-6">
+                        <p class="text-stone-700 mb-4">青い（または黒い）画面が開いたら、以下のコマンドをコピーして、PowerShellの画面上で<strong>「右クリック」</strong>して貼り付け、<kbd class="bg-stone-200 px-2 py-1 rounded text-xs font-mono">Enter</kbd>キーを押します。</p>
+                        
+                        <div class="terminal-box bg-[#0c0c0c] rounded-lg overflow-hidden border border-stone-700 shadow-inner mb-4">
+                            <div class="bg-[#1f1f1f] px-4 py-2 flex justify-between items-center border-b border-stone-700">
+                                <span class="text-stone-400 text-xs font-mono">管理者: Windows PowerShell</span>
+                                <button class="copy-btn text-xs bg-stone-700 hover:bg-stone-600 text-white px-3 py-1 rounded transition-colors flex items-center gap-1" data-clipboard="wsl --install --no-distribution">
+                                    <span>📋</span> コピー
+                                </button>
+                            </div>
+                            <div class="p-4 font-mono text-sm overflow-x-auto text-stone-300">
+                                <span class="text-blue-400">PS C:\Windows\system32&gt;</span> <span class="text-green-400">wsl --install --no-distribution</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-stone-500">画面に文字が流れ、「要求された操作は正常に終了しました。」などのメッセージが出たら完了です。</p>
+                    </div>
+                </div>
+
+                <div class="bg-orange-50 rounded-xl border border-orange-200 p-6 flex items-start gap-4 mb-8">
+                    <div class="text-3xl">🔄</div>
+                    <div>
+                        <h3 class="font-bold text-orange-800 mb-1">ステップ 3：パソコンの再起動</h3>
+                        <p class="text-orange-700 text-sm">機能の有効化を完全に反映させるため、<strong>ここで必ずパソコンを一度再起動</strong>してください。再起動後、次のステップに進みます。</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden mb-10">
+                    <div class="bg-stone-100 px-6 py-4 border-b border-stone-200 font-bold flex items-center gap-2">
+                        <span>🛍️</span> ステップ 4：Microsoft StoreでUbuntuを入手
+                    </div>
+                    <div class="p-6">
+                        <p class="text-stone-700 mb-4 text-sm">再起動が完了したら、Linuxの本体である「Ubuntu」をインストールします。</p>
+                        <ol class="list-decimal list-inside space-y-3 text-stone-700">
+                            <li class="pl-2">Windowsのスタートメニューから <strong>「Microsoft Store」</strong> アプリを開きます。</li>
+                            <li class="pl-2">上部の検索窓で <code class="bg-stone-100 px-2 py-1 rounded text-orange-600">Ubuntu</code> と検索します。</li>
+                            <li class="pl-2">検索結果から「Ubuntu」を選び、<strong>「入手」</strong> （または「インストール」）ボタンをクリックします。</li>
+                            <li class="pl-2">ダウンロードが完了すると「開く」ボタンが表示されます。<span class="text-red-600 font-bold">（※ここで急いで開くとエラーになることがあるため、次のステップの注意を読んでから開いてください）</span></li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <button class="prev-btn text-stone-500 hover:text-stone-800 font-bold py-2 px-4 transition-colors" data-target="1">
+                        ⬅️ 戻る
+                    </button>
+                    <button class="next-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg shadow transition-colors flex items-center gap-2" data-target="3">
+                        初期設定へ進む <span>➡️</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="step-section hidden fade-in" id="step-3">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-stone-800 mb-6 border-b-2 border-orange-200 pb-2">Ubuntuの初期設定 <span class="text-red-500 text-xl font-normal ml-2">※最大の難所です！</span></h2>
+                <p class="text-lg text-stone-600 mb-6 leading-relaxed">
+                    Storeで「開く」ボタンを押すか、スタートメニューから「Ubuntu」を開くと、黒い画面が立ち上がります。数分待つと、初期設定の入力画面になります。
+                </p>
+
+                <!-- 0x8000000d エラーのトラブルシューティングブロック -->
+                <div class="bg-red-50 p-6 rounded-xl border border-red-200 mb-8 shadow-sm">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-red-500 text-xl">⚠️</span>
+                        <h3 class="font-bold text-red-800">「Error: 0x8000000d」と表示された場合（焦らないで！）</h3>
+                    </div>
+                    <p class="text-red-700 text-sm mb-4">Microsoft StoreからUbuntuをインストールした場合や、処理が終わる前に急いで開こうとした際、以下のようなエラーが出ることがあります。</p>
+                    
+                    <div class="bg-black p-4 rounded text-stone-300 font-mono text-sm leading-relaxed mb-4">
+                        Installing, this may take a few minutes...<br>
+                        <span class="text-red-400">WslRegisterDistribution failed with error: 0x8000000d</span><br>
+                        <span class="text-red-400">Error: 0x8000000d ????????????????</span><br><br>
+                        Press any key to continue...
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded border border-red-100 flex items-start gap-3">
+                        <span class="text-2xl">☕</span>
+                        <div>
+                            <h4 class="font-bold text-stone-800 mb-1">解決法：そのまま数分間待つだけです</h4>
+                            <p class="text-stone-700 text-sm">これは「裏側での準備がまだ終わっていない」というエラーです。Enterキーを押してこの黒い画面を閉じ、<strong>1〜3分ほど待機</strong>してから、再度スタートメニューから「Ubuntu」を開き直してください。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden mb-6">
+                    <div class="p-6">
+                        <h3 class="font-bold text-stone-800 mb-3 text-lg border-l-4 border-teal-500 pl-3">1. ユーザー名の決定</h3>
+                        <p class="text-stone-700 mb-3">画面に <code class="bg-stone-100 text-pink-600 px-1 rounded">Enter new UNIX username:</code> と表示されたら、<strong>好きなユーザー名</strong>を入力して <kbd class="bg-stone-200 px-2 py-1 rounded text-xs font-mono">Enter</kbd> キーを押します。</p>
+                        <p class="text-sm text-stone-500 bg-stone-50 p-3 rounded border border-stone-200">※注意：半角の小文字の英語と数字のみが使えます。大文字やスペースは使えません。（例: taro, pcuser1 など）</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md border-2 border-red-300 overflow-hidden mb-6 relative">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-red-500"></div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-red-700 mb-3 text-lg border-l-4 border-red-500 pl-3 flex items-center gap-2">
+                            <span>⚠️</span> 2. パスワードの決定（※要注意ポイント）
+                        </h3>
+                        <p class="text-stone-700 mb-4">画面に <code class="bg-stone-100 text-pink-600 px-1 rounded">New password:</code> と表示されたら、<strong>パスワード</strong>を入力して <kbd class="bg-stone-200 px-2 py-1 rounded text-xs font-mono">Enter</kbd> キーを押します。</p>
+                        
+                        <div class="bg-red-50 p-4 rounded-lg mb-4 border border-red-100">
+                            <p class="font-bold text-red-800 mb-2">【超重要】文字が見えません！</p>
+                            <p class="text-sm text-red-700">
+                                セキュリティの都合上、<strong>キーボードを叩いても画面には「*」などの文字が一切表示されず、カーソルも動きません。</strong> しかし、パソコンはしっかりと入力を受け付けています。文字が出てこなくても慌てずにパスワードを打ち込み、Enterキーを押してください。
+                            </p>
+                        </div>
+                        
+                        <div class="mt-4 p-4 bg-stone-800 rounded-lg text-green-400 font-mono text-sm">
+                            <div class="mb-1">Enter new UNIX username: taro</div>
+                            <div class="flex items-center">
+                                <span>New password: </span>
+                                <span class="animate-pulse bg-green-400 w-2 h-4 ml-1 inline-block"></span>
+                                <span class="ml-4 text-stone-500 text-xs italic">&lt;-- タイピングしても画面は変化しません</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden mb-10">
+                    <div class="p-6">
+                        <h3 class="font-bold text-stone-800 mb-3 text-lg border-l-4 border-teal-500 pl-3">3. パスワードの再確認</h3>
+                        <p class="text-stone-700 mb-3"><code class="bg-stone-100 text-pink-600 px-1 rounded">Retype new password:</code> と表示されたら、<strong>先ほどと同じパスワード</strong>をもう一度見えない状態で入力し、 <kbd class="bg-stone-200 px-2 py-1 rounded text-xs font-mono">Enter</kbd> キーを押します。</p>
+                        
+                        <div class="bg-teal-50 text-teal-800 p-4 rounded text-center font-bold mt-4 border border-teal-200">
+                            緑色の文字で <code>ユーザー名@パソコン名:~$</code> と表示されたら、初期設定は無事に成功です！🎉
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <button class="prev-btn text-stone-500 hover:text-stone-800 font-bold py-2 px-4 transition-colors" data-target="2">
+                        ⬅️ 戻る
+                    </button>
+                    <button class="next-btn bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg shadow transition-colors flex items-center gap-2" data-target="4">
+                        最後の仕上げへ <span>➡️</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="step-section hidden fade-in" id="step-4">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-stone-800 mb-6 border-b-2 border-orange-200 pb-2">最初のおまじない（システムの最新化）</h2>
+                <p class="text-lg text-stone-600 mb-8 leading-relaxed">
+                    インストールしたばかりのUbuntuの中身を、最新の安全な状態にするためのアップデート（更新）作業を行います。この作業はLinuxを使う上での基本となります。
+                </p>
+
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden mb-6">
+                    <div class="p-6">
+                        <h3 class="font-bold text-stone-800 mb-4 flex items-center gap-2">
+                            <span class="bg-teal-100 text-teal-800 w-6 h-6 rounded-full flex items-center justify-center text-sm">1</span> 
+                            パッケージ一覧の更新
+                        </h3>
+                        <p class="text-stone-700 mb-3 text-sm">以下のコマンドをコピーし、Ubuntuの画面上で右クリックして貼り付け、<kbd class="bg-stone-200 px-1 rounded text-xs font-mono">Enter</kbd> を押します。</p>
+                        
+                        <div class="terminal-box bg-[#0c0c0c] rounded-lg overflow-hidden border border-stone-700 shadow-inner mb-4">
+                            <div class="bg-[#1f1f1f] px-4 py-2 flex justify-between items-center border-b border-stone-700">
+                                <span class="text-stone-400 text-xs font-mono">Ubuntu</span>
+                                <button class="copy-btn text-xs bg-stone-700 hover:bg-stone-600 text-white px-3 py-1 rounded transition-colors flex items-center gap-1" data-clipboard="sudo apt update">
+                                    <span>📋</span> コピー
+                                </button>
+                            </div>
+                            <div class="p-4 font-mono text-sm text-stone-300">
+                                <span class="text-green-400">user@pc:~$</span> sudo apt update
+                            </div>
+                        </div>
+                        <p class="text-sm text-red-600 font-semibold">※途中で <code>[sudo] password for...</code> と聞かれたら、前のステップで決めたパスワードを見えない状態で入力しEnterを押します。</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden mb-10">
+                    <div class="p-6">
+                        <h3 class="font-bold text-stone-800 mb-4 flex items-center gap-2">
+                            <span class="bg-teal-100 text-teal-800 w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span> 
+                            システムのアップグレード
+                        </h3>
+                        <p class="text-stone-700 mb-3 text-sm">処理が終わったら、次に以下のコマンドをコピーして貼り付け、<kbd class="bg-stone-200 px-1 rounded text-xs font-mono">Enter</kbd> を押します。</p>
+                        
+                        <div class="terminal-box bg-[#0c0c0c] rounded-lg overflow-hidden border border-stone-700 shadow-inner mb-4">
+                            <div class="bg-[#1f1f1f] px-4 py-2 flex justify-between items-center border-b border-stone-700">
+                                <span class="text-stone-400 text-xs font-mono">Ubuntu</span>
+                                <button class="copy-btn text-xs bg-stone-700 hover:bg-stone-600 text-white px-3 py-1 rounded transition-colors flex items-center gap-1" data-clipboard="sudo apt upgrade -y">
+                                    <span>📋</span> コピー
+                                </button>
+                            </div>
+                            <div class="p-4 font-mono text-sm text-stone-300">
+                                <span class="text-green-400">user@pc:~$</span> sudo apt upgrade -y
+                            </div>
+                        </div>
+                        <p class="text-sm text-stone-500">文字がたくさん流れます。再び一番下の行が <code>~$</code> で終わる状態になれば、すべてのセットアップは完了です！</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-orange-500 to-orange-400 rounded-xl shadow-lg p-8 text-center text-white mb-10">
+                    <div class="text-4xl mb-4">🎉</div>
+                    <h2 class="text-2xl font-bold mb-2">セットアップ完了！お疲れ様でした。</h2>
+                    <p class="opacity-90">これでWindows上でLinux環境が自由に使えるようになりました。</p>
+                </div>
+
+                <div class="flex justify-between items-center pb-8">
+                    <button class="prev-btn text-stone-500 hover:text-stone-800 font-bold py-2 px-4 transition-colors" data-target="3">
+                        ⬅️ 戻る
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const sections = document.querySelectorAll('.step-section');
+            const nextButtons = document.querySelectorAll('.next-btn');
+            const prevButtons = document.querySelectorAll('.prev-btn');
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            const mainContent = document.getElementById('main-content');
+
+            function switchStep(stepIndex) {
+                sections.forEach(sec => sec.classList.add('hidden'));
+                navButtons.forEach(btn => {
+                    btn.classList.remove('bg-orange-100', 'text-orange-800', 'font-semibold');
+                    btn.classList.add('text-stone-600', 'hover:bg-stone-100');
+                    const iconBg = btn.querySelector('span:first-child');
+                    iconBg.classList.remove('bg-white');
+                    iconBg.classList.add('bg-stone-200');
+                });
+
+                const targetSection = document.getElementById(`step-${stepIndex}`);
+                if (targetSection) {
+                    targetSection.classList.remove('hidden');
+                }
+
+                const targetNav = document.querySelector(`.nav-btn[data-step="${stepIndex}"]`);
+                if (targetNav) {
+                    targetNav.classList.remove('text-stone-600', 'hover:bg-stone-100');
+                    targetNav.classList.add('bg-orange-100', 'text-orange-800', 'font-semibold');
+                    const iconBg = targetNav.querySelector('span:first-child');
+                    iconBg.classList.remove('bg-stone-200');
+                    iconBg.classList.add('bg-white');
+                }
+
+                mainContent.scrollTop = 0;
+            }
+
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchStep(btn.getAttribute('data-step'));
+                });
+            });
+
+            nextButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchStep(btn.getAttribute('data-target'));
+                });
+            });
+
+            prevButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchStep(btn.getAttribute('data-target'));
+                });
+            });
+
+            copyButtons.forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const textToCopy = btn.getAttribute('data-clipboard');
+                    const originalHtml = btn.innerHTML;
+                    
+                    try {
+                        await navigator.clipboard.writeText(textToCopy);
+                        btn.innerHTML = '<span>✅</span> コピーしました';
+                        btn.classList.remove('bg-stone-700', 'hover:bg-stone-600');
+                        btn.classList.add('bg-teal-600', 'hover:bg-teal-700');
+                        
+                        setTimeout(() => {
+                            btn.innerHTML = originalHtml;
+                            btn.classList.remove('bg-teal-600', 'hover:bg-teal-700');
+                            btn.classList.add('bg-stone-700', 'hover:bg-stone-600');
+                        }, 2000);
+                    } catch (err) {
+                        const textArea = document.createElement("textarea");
+                        textArea.value = textToCopy;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        try {
+                            document.execCommand('copy');
+                            btn.innerHTML = '<span>✅</span> コピーしました';
+                            btn.classList.remove('bg-stone-700', 'hover:bg-stone-600');
+                            btn.classList.add('bg-teal-600', 'hover:bg-teal-700');
+                        } catch (err2) {
+                            btn.innerHTML = '<span>❌</span> 失敗';
+                        }
+                        document.body.removeChild(textArea);
+                        
+                        setTimeout(() => {
+                            btn.innerHTML = originalHtml;
+                            btn.classList.remove('bg-teal-600', 'hover:bg-teal-700');
+                            btn.classList.add('bg-stone-700', 'hover:bg-stone-600');
+                        }, 2000);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
