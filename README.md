@@ -3,6 +3,11 @@
 本リポジトリは、RNA-seq 解析に必要な Linux 基本操作を体験するための実習用ノートブックおよび補足資料を配置しています。
 
 ---
+### 実習用スライドリンク
+
+https://docs.google.com/presentation/d/1yOQ48kWW4UzW2_I9cGUxCl7vwY4NxIjy4-hsRDEA_jE/edit?usp=sharing
+
+---
 
 ### 実習用ノートブック（Google Colab）
 
