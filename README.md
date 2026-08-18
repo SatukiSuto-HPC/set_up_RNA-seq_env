@@ -21,7 +21,7 @@ https://docs.google.com/presentation/d/1yOQ48kWW4UzW2_I9cGUxCl7vwY4NxIjy4-hsRDEA
 
 講義外でご自身の Windows PC に WSL + Ubuntu 環境を構築したい方向けの HTML マニュアルです。
 
-* 🌐 [WSL + Ubuntu 環境構築ガイドを開く（ブラウザ表示）](https://htmlpreview.github.io/?https://github.com/SatukiSuto-HPC/set_up_RNA-seq_env/blob/main/wsl%2Bubuntu_setup.html)
+* 🌐 [WSL + Ubuntu 環境構築ガイドを開く（ブラウザ表示）](https://htmlpreview.github.io/?https://github.com/SatukiSuto-HPC/set_up_RNA-seq_env/blob/main/wsl%252Bubuntu_setup.html)
 * 📄 [リポジトリ内のソースファイル（wsl+ubuntu_setup.html）](https://github.com/SatukiSuto-HPC/set_up_RNA-seq_env/blob/main/wsl%2Bubuntu_setup.html)
 
 ---
